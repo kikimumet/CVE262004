@@ -1,0 +1,23 @@
+import pandas as pd
+from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
+
+def loadFileParquetToString(pathSource: str | Path) -> str | bool:
+    if not pathSource:
+        logger.error("PathSource tidak boleh kosong.")
+        return False
+
+    path_obj = Path(pathSource)
+    if not path_obj.exists():
+        logger.error(f"File Parquet tidak ditemukan: {path_obj}")
+        return False
+
+    try:
+        logger.info(f"Membaca file Parquet ke String JSON: {path_obj.name}")
+        df = pd.read_parquet(path_obj)
+        return df.to_json(orient="records")
+    except Exception as e:
+        logger.error(f"Gagal membaca file Parquet ke String JSON: {e}")
+        return False
